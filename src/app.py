@@ -1,6 +1,6 @@
 # import packages
 from fastapi import FastAPI
-from api.router import main_router
+from api.routes import main_router
 from bot.bot import tel_bot
 # import files
 from DB.database import DB
@@ -21,7 +21,7 @@ class App:
 
         logger.info('app init')
         # config app
-        self.app = FastAPI()
+        self.app = FastAPI(swagger_ui_parameters={'syntaxHighlight': False})
 
 
         # config db
