@@ -22,6 +22,8 @@ class tel_bot:
         self.bot = Bot(token=self.TOKEN)
         self.dp = Dispatcher(storage=MemoryStorage())
         self.router = Router()
+        # config handlers on initialization
+        self.config_handler()
         
     
     # update data process
@@ -43,7 +45,7 @@ class tel_bot:
             # check webhook conection
             if webhook_info:
                 logger.info('webhook set succsesfuly')
-                self.config_handler()
+
             else:
                 raise Exception('webhook is not set')
         except Exception as e:
@@ -52,5 +54,6 @@ class tel_bot:
     
     # config bot handler
     def config_handler(self):
-        logger.info('config bot handlers')
-        self.router.include_routers(Handler().router)
+        
+        self.router.include_router(Handler().router)
+        self.dp.include_router(self.router)

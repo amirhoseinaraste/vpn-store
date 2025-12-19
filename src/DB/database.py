@@ -1,31 +1,47 @@
 # import from packages
-from pymongo import MongoClient
-from utils.logger import setup_logger
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import asyncio
 
 # import from files
+from utils.logger import setup_logger
 from utils.env_loader import env_loader
 
-logger = setup_logger('DB')
+# import model
+from .model import *
 
+# init logger
+logger = setup_logger('database')
+
+# TODO : init database
 class DB:
-    DB_URI = str(env_loader('DB_URI'))
-    DB_NAME = str(env_loader('DB_NAME'))
+    # database url
+    DB_URL = str(env_loader('DB_URI'))
+
+    # create base model
+    Base = declarative_base()
+
     def __init__(self):
-        self.client = MongoClient(self.DB_URI)
-        self.database = self.client[self.DB_NAME]
 
-    # connect to db
-    def connect_to_db(self):
-        if self.client:
-            logger.info(f"Connected to MongoDB  ✅ (Database: {self.database.name})")
-        else:
-            logger.info("Failed to connect to MongoDB  ❌")
+        logger.info("Initializing database engine...")
 
-    # disconnect db
-    async def disconnect_db(self):
-        self.client.close() 
-        logger.info(f"Disconnected from MongoDB  ❌ (Database: {self.database.name})")
+        # create engine   
+        self.Engine = create_engine(self.DB_URL, echo= True, future=True)
 
-    async def collection(self, collection_name: str):
-        collection = self.database.get_collection(collection_name)
-        return collection
+        # Session
+        self.SessionLocal = sessionmaker(
+            expire_on_commit=False,
+            autoflush=False,
+            bind=self.Engine
+        )
+
+
+
+
+
+    
+
+        
+
+        

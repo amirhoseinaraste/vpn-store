@@ -2,10 +2,12 @@
 from fastapi import FastAPI
 from api.routes import main_router
 from bot.bot import tel_bot
+import asyncio
 # import files
 from DB.database import DB
 from utils.logger import setup_logger
 
+from  DB.model import *
 # config app log
 logger = setup_logger('app')
 
@@ -25,21 +27,12 @@ class App:
 
 
         # config db
-        self.config_db()
-
+        self.db = DB()
+        self.db.Base.metadata.create_all(bind=self.db.Engine)
+        
         # configurate api 
         self.app.include_router(main_router().router)
         
-
-    # configurate db in app module
-    def config_db(self):
-        logger.info('db config')
-
-        # init db
-        self.db = DB()
-
-        # connect app to db
-        self.db.connect_to_db()
 
 
 

@@ -15,7 +15,6 @@ class webhook:
         async def update_webhook(req: Request):
             data = await req.json()
             update_Data = Update(**data)
-            print(update_Data)
             await self.bot.update_data(update_Data)
 
             return {'status': 'ok'}
