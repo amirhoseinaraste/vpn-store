@@ -1,17 +1,22 @@
 # import frpm packages
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import JSONResponse
 
 # import from files
-from .webhook.webhook_api import webhook
+from api.webhook.webhook_api import webhook_router as webhook
+from api.user_router import user_router as user
+from api.schemas.error_schema import ErrorResponse
 
 # TODO: init main router
 class main_router:
     def __init__(self):
         self.router = APIRouter()
-        self.config_routes()
-
-    def config_routes(self):
+        self.routes_configurate()
+        
+    def routes_configurate(self):
         self.router.include_router(webhook().router)
+        self.router.include_router(user().router)
+
 
 
 

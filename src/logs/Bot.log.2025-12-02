@@ -1,4 +1,0 @@
-[2025-12-02 12:45:34] [INFO] => HTTP Client says - ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [The remote computer refused the network connection]
-[2025-12-02 12:48:47] [INFO] => HTTP Client says - ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [None]
-[2025-12-02 12:49:04] [INFO] => can only concatenate str (not "bool") to str
-[2025-12-02 12:51:47] [INFO] => HTTP Client says - ClientConnectorDNSError: Cannot connect to host api.telegram.org:443 ssl:default [getaddrinfo failed]

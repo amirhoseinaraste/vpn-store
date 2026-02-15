@@ -1,18 +1,14 @@
 # import packages
-from fastapi import FastAPI
-from api.routes import main_router
-from bot.bot import tel_bot
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+
 # import files
-from DB.database import DB
+from api.routes import main_router
+from src.api.schemas.error_schema import ErrorResponse
 from utils.logger import setup_logger
 
 # config app log
 logger = setup_logger('app')
-
-""" explain App:
-        class based
-
-"""
 
 # TODO: Init App
 
@@ -20,26 +16,23 @@ class App:
     def __init__(self):
 
         logger.info('app init')
+
         # config app
         self.app = FastAPI(swagger_ui_parameters={'syntaxHighlight': False})
-
-
-        # config db
-        self.config_db()
 
         # configurate api 
         self.app.include_router(main_router().router)
         
+        # error handeling
+        @self.app.exception_handler(HTTPException)
+        async def global_exception_handler(request: Request, exc: HTTPException):
+            return JSONResponse(
+                status_code=exc.status_code,
+                content=ErrorResponse(code=exc.status_code, message=exc.detail).model_dump()
+            )
+        
 
-    # configurate db in app module
-    def config_db(self):
-        logger.info('db config')
 
-        # init db
-        self.db = DB()
-
-        # connect app to db
-        self.db.connect_to_db()
 
 
 

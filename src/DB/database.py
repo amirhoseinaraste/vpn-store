@@ -1,31 +1,20 @@
 # import from packages
-from pymongo import MongoClient
-from utils.logger import setup_logger
+from typing import Annotated
+from fastapi.params import Depends
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.orm import declarative_base
 
 # import from files
-from utils.env_loader import env_loader
+from src.utils.env_loader import env_loader
+from src.utils.logger import setup_logger
 
-logger = setup_logger('DB')
+logger = setup_logger('database')
+logger.info('database init')
 
-class DB:
-    DB_URI = str(env_loader('DB_URI'))
-    DB_NAME = str(env_loader('DB_NAME'))
-    def __init__(self):
-        self.client = MongoClient(self.DB_URI)
-        self.database = self.client[self.DB_NAME]
+# init database
+database_URI = str(env_loader('DB_URI'))
+engine = create_async_engine(database_URI, echo=True)
+sessionlocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+Base = declarative_base()
 
-    # connect to db
-    def connect_to_db(self):
-        if self.client:
-            logger.info(f"Connected to MongoDB  ✅ (Database: {self.database.name})")
-        else:
-            logger.info("Failed to connect to MongoDB  ❌")
 
-    # disconnect db
-    async def disconnect_db(self):
-        self.client.close() 
-        logger.info(f"Disconnected from MongoDB  ❌ (Database: {self.database.name})")
-
-    async def collection(self, collection_name: str):
-        collection = self.database.get_collection(collection_name)
-        return collection

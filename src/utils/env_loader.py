@@ -6,6 +6,6 @@ from dotenv import load_dotenv
 def env_loader(key: str):
     # config env
     load_dotenv()
-
+    
     # return env value
     return os.getenv(key)

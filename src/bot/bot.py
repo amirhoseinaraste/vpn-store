@@ -1,7 +1,7 @@
 # import from files
-from utils.env_loader import env_loader
-from utils.logger import setup_logger
-from .handler.main_handlers import Handler
+from src.utils.env_loader import env_loader
+from src.utils.logger import setup_logger
+from src.bot.handler.main_handlers import Handler
 
 # import from packages
 from aiogram import Bot, Dispatcher, Router
@@ -22,6 +22,7 @@ class tel_bot:
         self.bot = Bot(token=self.TOKEN)
         self.dp = Dispatcher(storage=MemoryStorage())
         self.router = Router()
+        self.config_handler()
         
     
     # update data process
@@ -43,7 +44,6 @@ class tel_bot:
             # check webhook conection
             if webhook_info:
                 logger.info('webhook set succsesfuly')
-                self.config_handler()
             else:
                 raise Exception('webhook is not set')
         except Exception as e:
@@ -54,3 +54,4 @@ class tel_bot:
     def config_handler(self):
         logger.info('config bot handlers')
         self.router.include_routers(Handler().router)
+        self.dp.include_router(self.router)

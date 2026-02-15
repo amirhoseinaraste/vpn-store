@@ -19,11 +19,11 @@ class Server:
     def __init__(self):
         self.server = App()
 
-    # run server method
+    # this method run server 
     def run(self):
         logger.info('server running')
 
-        uvicorn.run(self.server.app, host= self.HOST, port=self.PORT, log_level='info')
+        uvicorn.run(self.server.app, host=self.HOST, port=self.PORT, log_level='info')
 
 if __name__ == '__main__':
     app = Server()
