@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.model.product import Product
 
 # TODO: implement product service
-class UserService:
+class ProductService:
 
     def __init__(self, DB: AsyncSession):
         # Inject database
@@ -25,16 +25,20 @@ class UserService:
             await session.refresh(new_product)
             return new_product
     
-    async def get_all_product(self):
+    async def get_all_products(self):
+        # get all products
         async with self.db() as session:
             result = await session.execute(select(Product))
             return result.scalars().all()
         
     async def get_product(self, id: int):
+        # get one product by id
         async with self.db() as session:
             result = await session.execute(select(Product).where(Product.id == id))
             return result.scalars().first()
+
     async def update_product(self, id: int, name: str, price: int, description: str):
+        # update one product
         async with self.db() as session:
             result = await session.execute(select(Product).where(Product.id == id))
             product = result.scalars().first()
@@ -48,6 +52,7 @@ class UserService:
             return None
         
     async def delete_product(self, id: int):
+        # delete product by id
         async with self.db() as session:
             result = await session.execute(select(Product).where(Product.id == id))
             product = result.scalars().first()

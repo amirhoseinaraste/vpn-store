@@ -16,19 +16,6 @@ class user_router:
     def __init__(self):
         self.router = APIRouter(tags=['User API'])
         self.user_controller = UserController(DB=sessionlocal)
-
-        # sign in user route
-        @self.router.post('/user/signin', response_model=GetUserSchema)
-        async def sign_in_user(user: CreateUserSchema):
-            created_user = await self.user_controller.sign_in_user(
-                telegram_id=user.telegram_id,
-                username=user.username,
-                first_name=user.first_name,
-                last_name=user.last_name
-            )
-            if not created_user:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User could not be created")
-            return created_user
         
         # get user by id route
         @self.router.get('/user/{id}', response_model=GetUserSchema)
