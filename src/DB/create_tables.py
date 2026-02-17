@@ -2,9 +2,9 @@
 import asyncio
 
 # from files
-from src.utils.env_loader import env_loader
 from src.DB.database import Base, engine
 from src.model.user import User  
+from src.model.product import Product
 
 # note: this file is for create tables in database if not exist, we run this file one time after we add new model to create new table in database, and we can delete this file after that, because we will use alembic for database migration in future
 async def create_tables():

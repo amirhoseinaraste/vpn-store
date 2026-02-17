@@ -2,7 +2,7 @@
 from src.DB.database import Base
 
 # import from packages
-from sqlalchemy import Column, Integer, String, BigInteger, Date
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.types import DateTime
 import uuid
@@ -17,5 +17,5 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     status = Column(String, default='active')
-    created_at = Column(Date)
-    updated_at = Column(Date)
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)

@@ -12,13 +12,27 @@ class ProductService:
     def __init__(self, DB: AsyncSession):
         # Inject database
         self.db = DB
-    async def create_product(self, name: str, price: int, description: str):
+    
+    async def check_product_exists(self, name: str, category: str, volume: int, price: int, duration: int):
+        # check if product already exists in database
+        async with self.db() as session:
+            result = await session.execute(select(Product).filter(
+                Product.name == name,
+                Product.category == category,
+                Product.volume == volume,
+                Product.price == price,
+                Product.duration == duration
+            ))
+            return result.scalars().first()
+    async def create_product(self, name: str, category: str, volume: int, price: int, duration: int):
         # Create a new product
         async with self.db() as session:
             new_product = Product(
                 name=name,
+                category=category,
+                volume=volume,
                 price=price,
-                description=description
+                duration=duration
             )
             session.add(new_product)
             await session.commit()
@@ -37,7 +51,7 @@ class ProductService:
             result = await session.execute(select(Product).where(Product.id == id))
             return result.scalars().first()
 
-    async def update_product(self, id: int, name: str, price: int, description: str):
+    async def update_product(self, id: int, name: str, price: int, duration: int):
         # update one product
         async with self.db() as session:
             result = await session.execute(select(Product).where(Product.id == id))
@@ -45,7 +59,7 @@ class ProductService:
             if product:
                 product.name = name
                 product.price = price
-                product.description = description
+                product.duration = duration
                 await session.commit()
                 await session.refresh(product)
                 return product

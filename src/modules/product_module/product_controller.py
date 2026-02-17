@@ -21,9 +21,12 @@ class ProductController:
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         
-    async def create_new_product(self):
-        try:            
-            return self.product_service.create_product()
+    async def create_new_product(self, name: str, category: str, volume: int, price: int, duration: int):
+        try:          
+            check_product = await self.product_service.check_product_exists(name=name, category=category, volume=volume, price=price, duration=duration)
+            if check_product:
+                raise exception_handlers.HTTPException(status_code=400, detail="Product already exists")
+            return await self.product_service.create_product(name=name, category=category, volume=volume, price=price, duration=duration)
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         

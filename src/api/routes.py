@@ -3,9 +3,10 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 # import from files
-from api.webhook.webhook_api import webhook_router as webhook
-from api.user_router import user_router as user
-from api.schemas.error_schema import ErrorResponse
+from src.api.webhook.webhook_api import webhook_router as webhook
+from src.api.user_router import user_router as user
+from src.api.product_router import product_router as product
+from src.api.schemas.error_schema import ErrorResponse
 
 # TODO: init main router
 class main_router:
@@ -16,7 +17,8 @@ class main_router:
     def routes_configurate(self):
         self.router.include_router(webhook().router)
         self.router.include_router(user().router)
-
+        self.router.include_router(product().router)
+        
 
 
 

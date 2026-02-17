@@ -1,19 +1,27 @@
 # import from files     
 from src.DB.database import Base
 
+
 # import from packages
-from sqlalchemy import Column, Integer, String, BigInteger, Date
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Enum
+import datetime
+import enum
+
+class ProductStatus(enum.Enum):
+    available = "available"
+    inactive = "inactive"
+    out_of_stock = "out_of_stock"
 
 
 class Product(Base):
-    __tablename__ = 'users'
+    __tablename__ = 'products'
 
     id = Column(Integer, primary_key=True, index=True)
-    prduct_id = Column(Integer, unique=True, index=True)
-    name = Column(String, unique=True, index=True)
-    category = Column(String, unique=True, index=True)
-    price = Column(String)
-    stock = Column(String)
-    status = Column(String, default='active')
-    created_at = Column(Date)
-    updated_at = Column(Date)
+    name = Column(String, index=True)
+    category = Column(String, index=True)
+    price = Column(Integer)
+    volume = Column(Integer)
+    duration = Column(Integer)
+    status = Column(Enum(ProductStatus), default=ProductStatus.available)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime,  default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
