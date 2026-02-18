@@ -3,7 +3,8 @@ from src.DB.database import Base
 
 
 # import from packages
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Enum
+from sqlalchemy import Column, ForeignKey, Integer, String, BigInteger, DateTime, Enum
+from sqlalchemy.orm import relationship
 import datetime
 import enum
 
@@ -18,10 +19,12 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    category = Column(String, index=True)
     price = Column(Integer)
     volume = Column(Integer)
     duration = Column(Integer)
     status = Column(Enum(ProductStatus), default=ProductStatus.available)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime,  default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    category_id = Column(Integer, ForeignKey('categories.id'))
+    category = relationship('Category', backref='products')
