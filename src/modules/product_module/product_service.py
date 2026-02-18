@@ -1,6 +1,7 @@
 # import from packages
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+import datetime
 
 
 # import from file
@@ -32,8 +33,11 @@ class ProductService:
                 category=category,
                 volume=volume,
                 price=price,
-                duration=duration
-            )
+                duration=duration,
+                created_at=datetime.datetime.utcnow(),
+                updated_at=datetime.datetime.utcnow()
+                
+            )   
             session.add(new_product)
             await session.commit()
             await session.refresh(new_product)
