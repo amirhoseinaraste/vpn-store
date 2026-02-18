@@ -6,7 +6,7 @@ from src.DB.database import sessionlocal
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-import requests
+
 
 # todo: implement user Handler
 
