@@ -69,7 +69,7 @@ class CategoryService:
             return category
         
         async def delete_category(self, id: int):
-            async with self.DB.() as session:
+            async with self.DB() as session:
                 stmt = select(Category).where(Category.id == id)
                 result = await self.DB.execute(stmt)
                 category = result.scalars().first()
