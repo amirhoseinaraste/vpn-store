@@ -1,7 +1,6 @@
 # Import from files
 from src.modules.user_module.user_service import UserService
 
-
 # import from packages
 from fastapi import HTTPException
 

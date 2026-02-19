@@ -41,16 +41,16 @@ class CategoryService:
             result = await self.db.execute(stmt)
             return result.scalars().all()
         
-    async def get_category(self, id: int):
+    async def get_category_by_id(self, id: int):
         async with self.db() as session:
             stmt = select(Category).where(Category.id == id)
             result = await self.db.execute(stmt)
             return result.scalars().first()
         
     async def update_category(self, id: int, name: str = None, tag: str = None, description: str = None, parent_id: int = None):    
-        async with self.v() as session:
+        async with self.db() as session:
             stmt = select(Category).where(Category.id == id)
-            result = await self.DB.execute(stmt)
+            result = await self.db.execute(stmt)
             category = result.scalars().first()
             if not category:
                 raise ValueError("Category not found")
@@ -64,18 +64,18 @@ class CategoryService:
             if parent_id is not None:
                 category.parent_id = parent_id
             
-            await self.DB.commit()
-            await self.DB.refresh(category)
+            await self.db.commit()
+            await self.db.refresh(category)
             return category
         
-        async def delete_category(self, id: int):
-            async with self.DB() as session:
+        async def delete_category_by_id(self, id: int):
+            async with self.db() as session:
                 stmt = select(Category).where(Category.id == id)
-                result = await self.DB.execute(stmt)
+                result = await self.db.execute(stmt)
                 category = result.scalars().first()
                 if not category:
                     raise ValueError("Category not found")
                 
-                await self.DB.delete(category)
-                await self.DB.commit()
+                await self.db.delete(category)
+                await self.db.commit()
                 return True
