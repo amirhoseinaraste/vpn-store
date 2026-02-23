@@ -6,7 +6,6 @@ from src.api.schemas.product.getall_schema import ResponseGetAllProductsSchema
 
 from src.DB.database import sessionlocal
 
-
 # import from necessary packages
 from fastapi import APIRouter, HTTPException, status
 
@@ -40,4 +39,28 @@ class product_router:
         async def get_all_products():
             products = await self.product_controller.get_all_products()
             return [ResponseGetAllProductsSchema(id=product.id, name=product.name, category=product.category, price=product.price, volume=product.volume, duration=product.duration, status=product.status) for product in products]
-        
+    
+        @self.router.put('/product/{id}', response_model=ResponseGetOneProductSchema)
+        async def update_product(id: int, product: CreateProduct):
+            try:
+                updated_product = await self.product_controller.update_product(product_id=id, name=product.name, category=product.category, volume=product.volume, price=product.price, duration=product.duration)
+                if not updated_product:
+                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+                return ResponseGetOneProductSchema(id=updated_product.id, name=updated_product.name, category=updated_product.category, price=updated_product.price, volume=updated_product.volume, duration=updated_product.duration, status=updated_product.status, created_at=updated_product.created_at, updated_at=updated_product.updated_at)
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            
+        @self.router.delete('/product/{id}')
+        async def delete_product(id: int):
+            try:
+                deleted_product = await self.product_controller.delete_product(product_id=id)
+                if not deleted_product:
+                    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+                return {"status": "success", "message": f"Product with id {id} deleted successfully"}
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            
