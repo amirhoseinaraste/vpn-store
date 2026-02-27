@@ -10,7 +10,7 @@ class ResponseGetOneProductSchema(BaseModel):
     name: str
     description: Optional[str] = None
     price: float
-    category: Optional[str] = None
+    category: Optional[int] = None
     volume: int
     duration: int
     status : Optional[str] = None

@@ -7,7 +7,7 @@ from typing import Optional
 class ResponseGetAllProductsSchema(BaseModel):
     id: int
     name: str
-    category: Optional[str] = None
+    category: Optional[int] = None
     price: float
     volume: int
     duration: int

@@ -7,13 +7,8 @@ from sqlalchemy import Column, Integer, String, BigInteger, DateTime, Text, Fore
 from sqlalchemy.orm import relationship
 
 import datetime
-import enum
 
-class ProductStatus(enum.Enum):
-    available = "available"
-    inactive = "inactive"
-    out_of_stock = "out_of_stock"
-
+# NOTE: ProductStatus enum defined in product model; category doesn't need its own copy.
 
 class Category(Base):
     __tablename__ = 'categories'
@@ -26,4 +21,7 @@ class Category(Base):
     updated_at = Column(DateTime,  default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     
     parent_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
-    parent = relationship('Category', remote_side=[id], backref='subcategories')
+    parent = relationship('Category', remote_side=[id], backref='children')
+
+    # inverse side of Product.category_rel relationship
+    products = relationship("Product", back_populates="category_rel")

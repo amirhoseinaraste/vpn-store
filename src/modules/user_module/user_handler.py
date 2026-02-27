@@ -1,6 +1,7 @@
 # import from files
 from src.modules.user_module.user_controller import UserController
 from src.DB.database import sessionlocal
+from src.modules.user_module.user_keyboard import UserKeyboard
 
 # import from packages
 from aiogram import Router
@@ -28,6 +29,8 @@ class UserHandler:
 
         sign_in = await self.user_controller.sign_in_user(telegram_id, username, first_name, last_name)
 
-        await message.answer(f"Welcome, {sign_in.first_name} {sign_in.last_name}!")         
+        await message.answer(f"Welcome, {sign_in.first_name} {sign_in.last_name}!", reply_markup=UserKeyboard.main_menu_keyboard())         
+        await message.answer("Use the menu below to navigate through the bot's features.", reply_markup=UserKeyboard.main_menu_keyboard())
+        
 
 

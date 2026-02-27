@@ -1,18 +1,17 @@
 # import from files
+
+from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
 
 # create category schema
 class CreateCategorySchema(BaseModel):
-    name: str = Field(..., example="VPN")
-    tag: Optional[str] = Field(None, example="#vpn")
-    description: Optional[str] = Field(None, example="A category for VPN products")
-    parent_id: Optional[int] = Field(None, example=1)
+    name: str 
+    tag: str
+    description: Optional[str]
+    parent_id: Optional[int] = None
 
 class responseCreateCategorySchema(BaseModel):
     id: int
-    name: str
-    tag: Optional[str] = None
-    description: Optional[str] = None
-    parent_id: Optional[int] = None
-    
+    status: str
+    created_at: datetime

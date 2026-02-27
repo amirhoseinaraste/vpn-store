@@ -4,7 +4,7 @@ from src.modules.category_module.category_service import CategoryService
 from fastapi import HTTPException
 
 
-class category_controller:
+class CategoryController:
     def __init__(self, DB):
         self.category_service = CategoryService(DB)
 
@@ -15,7 +15,7 @@ class category_controller:
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error fetching categories: {e}")
         
-    async def get_category(self, id: int):
+    async def get_category(self, id: str):
         try:
             category = await self.category_service.get_category_by_id(id)
             if not category:
@@ -24,9 +24,19 @@ class category_controller:
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error fetching category: {e}")
         
-    async def create_category(self, name: str):
+    async def create_category(self, data):
         try:
-            new_category = await self.category_service.create_category(name)
+            # check exist user with name
+            existing_category = await self.category_service.get_category_by_name(data.name)
+            if existing_category:
+                raise HTTPException(status_code=400, detail="Category with this name already exists")
+
+            # check tag fileds have #    
+            check_have_hashtag = data.tag and data.tag.startswith('#')
+            if not check_have_hashtag:
+                raise HTTPException(status_code=400, detail="Tag must start with '#'")
+
+            new_category = await self.category_service.create_category(data.name, data.tag, data.description, data.parent_id)
             return new_category
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error creating category: {e}")

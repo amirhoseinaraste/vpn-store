@@ -4,10 +4,12 @@ from typing import Optional
 
 class CreateProduct(BaseModel):
     name: str
-    category: str
+    category: int
     volume: int
     price: int
     duration: int
+    status: Optional[str] = "available"
+    
 
 class responseCreateProductSchema(BaseModel):
     id: int

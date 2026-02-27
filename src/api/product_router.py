@@ -20,7 +20,8 @@ class product_router:
         @self.router.post('/product', response_model=responseCreateProductSchema)
         async def create_product(product: CreateProduct):
             try:
-                new_product = await self.product_controller.create_new_product(name=product.name, category=product.category, volume=product.volume, price=product.price, duration=product.duration)
+                print(product)
+                new_product = await self.product_controller.create_new_product(product)
                 return responseCreateProductSchema(id=new_product.id, status="success", created_at=str(new_product.created_at))
             except HTTPException as e:
                 raise e
@@ -33,20 +34,20 @@ class product_router:
             product = await self.product_controller.get_product_by_id(id)
             if not product:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-            return ResponseGetOneProductSchema(id=product.id, name=product.name, category=product.category, price=product.price, volume=product.volume, duration=product.duration, status=product.status, created_at=product.created_at, updated_at=product.updated_at)    
+            return ResponseGetOneProductSchema(id=product.id, name=product.name, category=product.category_id, price=product.price, volume=product.volume, duration=product.duration, status=product.status, created_at=product.created_at, updated_at=product.updated_at)    
         # get all products route
         @self.router.get('/products', response_model=list[ResponseGetAllProductsSchema])
         async def get_all_products():
             products = await self.product_controller.get_all_products()
-            return [ResponseGetAllProductsSchema(id=product.id, name=product.name, category=product.category, price=product.price, volume=product.volume, duration=product.duration, status=product.status) for product in products]
+            return [ResponseGetAllProductsSchema(id=product.id, name=product.name, category=product.category_id, price=product.price, volume=product.volume, duration=product.duration, status=product.status) for product in products]
     
         @self.router.put('/product/{id}', response_model=ResponseGetOneProductSchema)
         async def update_product(id: int, product: CreateProduct):
             try:
-                updated_product = await self.product_controller.update_product(product_id=id, name=product.name, category=product.category, volume=product.volume, price=product.price, duration=product.duration)
+                updated_product = await self.product_controller.update_product(product_id=id, product=product)
                 if not updated_product:
                     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-                return ResponseGetOneProductSchema(id=updated_product.id, name=updated_product.name, category=updated_product.category, price=updated_product.price, volume=updated_product.volume, duration=updated_product.duration, status=updated_product.status, created_at=updated_product.created_at, updated_at=updated_product.updated_at)
+                return ResponseGetOneProductSchema(id=updated_product.id, name=updated_product.name, category=updated_product.category_id, price=updated_product.price, volume=updated_product.volume, duration=updated_product.duration, status=updated_product.status, created_at=updated_product.created_at, updated_at=updated_product.updated_at)
             except HTTPException as e:
                 raise e
             except Exception as e:

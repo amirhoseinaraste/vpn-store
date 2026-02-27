@@ -21,12 +21,30 @@ class ProductController:
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         
-    async def create_new_product(self, name: str, category: str, volume: int, price: int, duration: int):
-        try:          
-            check_product = await self.product_service.check_product_exists(name=name, category=category, volume=volume, price=price, duration=duration)
+    async def create_new_product(self, product):
+        try:       
+            # pass full product object to service for existence check
+            check_product = await self.product_service.check_product_exists(product)
             if check_product:
                 raise exception_handlers.HTTPException(status_code=400, detail="Product already exists")
-            return await self.product_service.create_product(name=name, category=category, volume=volume, price=price, duration=duration)
+            return await self.product_service.create_product(product)
+        except ValueError as ve:
+            # expected validation error from service
+            raise exception_handlers.HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise exception_handlers.HTTPException(status_code=500, detail=str(e))
+         
+    async def update_product(self, product_id: int, product):
+        try:
+            return await self.product_service.update_product(product_id, product)
+        except ValueError as ve:
+            raise exception_handlers.HTTPException(status_code=400, detail=str(ve))
+        except Exception as e:
+            raise exception_handlers.HTTPException(status_code=500, detail=str(e))
+    
+    async def delete_product(self, product_id: int):
+        try:
+            return await self.product_service.delete_product(product_id)
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         

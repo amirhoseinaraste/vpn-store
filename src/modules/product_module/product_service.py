@@ -5,7 +5,9 @@ import datetime
 
 
 # import from file
+from src.model.category import Category
 from src.model.product import Product
+from src.modules.category_module.category_service import CategoryService
 
 # TODO: implement product service
 class ProductService:
@@ -13,30 +15,41 @@ class ProductService:
     def __init__(self, DB: AsyncSession):
         # Inject database
         self.db = DB
+        
+        # inject category service
+        self.category_services = CategoryService(self.db)
     
-    async def check_product_exists(self, name: str, category: str, volume: int, price: int, duration: int):
-        # check if product already exists in database
+    async def check_product_exists(self, product):
+        """Check if a product with the same attributes already exists.
+
+        The controller passes the full Pydantic model so we can compare all
+        relevant fields (name, category, volume, price, duration).
+        """
         async with self.db() as session:
             result = await session.execute(select(Product).filter(
-                Product.name == name,
-                Product.category == category,
-                Product.volume == volume,
-                Product.price == price,
-                Product.duration == duration
+                Product.name == product.name,
+                Product.category_id == product.category,
+                Product.volume == product.volume,
+                Product.price == product.price,
+                Product.duration == product.duration
             ))
             return result.scalars().first()
-    async def create_product(self, name: str, category: str, volume: int, price: int, duration: int):
+    async def create_product(self, product):
         # Create a new product
         async with self.db() as session:
+            print("!")
+            category = await self.category_services.get_category_by_id(id = product.category)
+            if not category:
+                # caller should handle a bad request
+                raise ValueError(f"Category with id {product.category} does not exist")
             new_product = Product(
-                name=name,
-                category=category,
-                volume=volume,
-                price=price,
-                duration=duration,
+                name=product.name,
+                category_id=category.id,
+                volume=product.volume,
+                price=product.price,
+                duration=product.duration,
                 created_at=datetime.datetime.utcnow(),
                 updated_at=datetime.datetime.utcnow()
-                
             )   
             session.add(new_product)
             await session.commit()
@@ -55,18 +68,28 @@ class ProductService:
             result = await session.execute(select(Product).where(Product.id == id))
             return result.scalars().first()
 
-    async def update_product(self, id: int, name: str, price: int, duration: int):
-        # update one product
+    async def update_product(self, product_id: int, product):
+        """Update the given product's attributes.
+
+        We accept the full Pydantic model so all mutable fields can be applied.
+        """
         async with self.db() as session:
-            result = await session.execute(select(Product).where(Product.id == id))
-            product = result.scalars().first()
-            if product:
-                product.name = name
-                product.price = price
-                product.duration = duration
+            result = await session.execute(select(Product).where(Product.id == product_id))
+            existing = result.scalars().first()
+            if existing:
+                # validate category existence
+                if product.category is not None:
+                    category = await self.category_services.get_category_by_id(id=product.category)
+                    if not category:
+                        raise ValueError(f"Category with id {product.category} does not exist")
+                    existing.category_id = category.id
+                existing.name = product.name
+                existing.price = product.price
+                existing.duration = product.duration
+                existing.volume = product.volume
                 await session.commit()
-                await session.refresh(product)
-                return product
+                await session.refresh(existing)
+                return existing
             return None
         
     async def delete_product(self, id: int):
