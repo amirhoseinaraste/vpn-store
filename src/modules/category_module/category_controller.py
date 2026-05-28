@@ -56,5 +56,6 @@ class CategoryController:
             return deleted_category
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error deleting category: {e}")
-        
+    
+    
 

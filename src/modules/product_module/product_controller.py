@@ -21,6 +21,13 @@ class ProductController:
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         
+    async def get_products_by_category_id(self, category_id: int):
+        try:
+            return await self.product_service.get_products_by_category_id(category_id)
+        except Exception as e:
+            raise exception_handlers.HTTPException(status_code=500, detail=str(e))
+        
+        
     async def create_new_product(self, product):
         try:       
             # pass full product object to service for existence check
