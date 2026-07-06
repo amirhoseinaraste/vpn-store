@@ -70,15 +70,15 @@ class CategoryService:
             await session.refresh(category)
             return category
         
-        async def delete_category_by_id(self, id: int):
-            async with self.db() as session:
-                stmt = select(Category).where(Category.id == id)
-                result = await session.execute(stmt)
-                category = result.scalars().first()
-                if not category:
-                    raise ValueError("Category not found")
+    async def delete_category_by_id(self, id: int):
+        async with self.db() as session:
+            stmt = select(Category).where(Category.id == id)
+            result = await session.execute(stmt)
+            category = result.scalars().first()
+            if not category:
+                raise ValueError("Category not found")
                 
                   
-                await session.delete(category)
-                await session.commit()
-                return True
+            await session.delete(category)
+            await session.commit()
+            return True    

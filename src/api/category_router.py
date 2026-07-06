@@ -1,6 +1,7 @@
 # import from fiels
 from src.modules.category_module.category_controller import CategoryController
 from src.api.schemas.category.create_schema import CreateCategorySchema, responseCreateCategorySchema
+from src.api.schemas.category.update_schema import UpdateCategorySchema, responseUpdateCategorySchema
 from src.DB.database import sessionlocal
 
 # from packages
@@ -42,3 +43,23 @@ class category_router:
             except Exception as e:
                 raise HTTPException(status_code=500, detail=str(e))
         
+        @self.router.put('/category/update/{id}', response_model=responseUpdateCategorySchema)
+        async def update_category(id: int, category: UpdateCategorySchema):
+            try:
+                print(category)
+                updated_category = await self.category_controller.update_category(id, category)
+                return responseUpdateCategorySchema(**updated_category.dict())
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))
+        
+        @self.router.delete('/category/delete/{id}')
+        async def delete_category(id: int):
+            try:
+                deleted_category = await self.category_controller.delete_category(id)
+                return {"status": "success", "message": f"Category with id {id} deleted successfully"}
+            except HTTPException as e:
+                raise e
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=str(e))

@@ -23,7 +23,16 @@ class ProductController:
         
     async def get_products_by_category_id(self, category_id: int):
         try:
-            return await self.product_service.get_products_by_category_id(category_id)
+            products = await self.product_service.get_all_products()
+            selected_products = []
+            for product in products:
+                if product.category_id == category_id:
+                    selected_products.append(product)
+            
+            if selected_products == []:
+                raise exception_handlers.HTTPException(status_code=404, detail="No products found for this category")   
+            
+            return selected_products
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))
         

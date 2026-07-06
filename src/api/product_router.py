@@ -40,6 +40,14 @@ class product_router:
         async def get_all_products():
             products = await self.product_controller.get_all_products()
             return [ResponseGetAllProductsSchema(id=product.id, name=product.name, category=product.category_id, price=product.price, volume=product.volume, duration=product.duration, status=product.status) for product in products]
+        
+        # get product by category id
+        @self.router.get('/product/categories/{id}')
+        async def get_products_by_category(id: int):
+            products = await self.product_controller.get_products_by_category_id(category_id=id)
+            if not products:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No products found for this category")
+            return [ResponseGetAllProductsSchema(id=product.id, name=product.name, category=product.category_id, price=product.price, volume=product.volume, duration=product.duration, status=product.status) for product in products]
     
         @self.router.put('/product/{id}', response_model=ResponseGetOneProductSchema)
         async def update_product(id: int, product: CreateProduct):

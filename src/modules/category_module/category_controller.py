@@ -1,4 +1,5 @@
 # import from files
+from src.api.schemas.category.update_schema import UpdateCategorySchema
 from src.modules.category_module.category_service import CategoryService
 # import from packages
 from fastapi import HTTPException
@@ -40,12 +41,14 @@ class CategoryController:
             return new_category
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error creating category: {e}")
-    async def update_category(self, id: int, name: str):
+    async def update_category(self, id: int, category: UpdateCategorySchema):
         try:
-            updated_category = await self.category_service.update_category(id, name)
+
+            updated_category = await self.category_service.update_category(id, category)
             if not updated_category:
                 raise HTTPException(status_code=404, detail="Category not found")
             return updated_category
+        
         except ValueError as e:
             raise HTTPException(status_code=400, detail=f"Error updating category: {e}")
     async def delete_category(self, id: int):

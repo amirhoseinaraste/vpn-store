@@ -13,7 +13,8 @@ class CategoryKeyboard():
         # for category 
         builder = InlineKeyboardBuilder()
         for category in categories_list :
-            builder.button(text=category.name, callback_data=category.name)
+            print(category.name)
+            builder.button(text=str(category.name), callback_data=str(category.name))
 
 
         builder.adjust(1)

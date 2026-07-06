@@ -95,13 +95,17 @@ class ProductService:
     async def delete_product(self, id: int):
         # delete product by id
         async with self.db() as session:
-            result = await session.execute(select(Product).where(Product.id == id))
+            stmt = select(Product).where(Product.id == id)
+            result = await session.execute(stmt)
             product = result.scalars().first()
-            if product:
-                await session.delete(product)
-                await session.commit()
-                return True
-            return False
+            
+            if not product: 
+                raise ValueError('Product not found')
+
+            await session.delete(product)
+            await session.commit()
+            return True    
+           
         
     
     

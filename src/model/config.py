@@ -8,10 +8,10 @@ import datetime
 
 
 class Config(Base):
-    __tablename__ = 'configs'
+    __tablename__ = 'Configs'
 
     id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer, ForeignKey('products.id'), index=True)
+    product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
     value = Column(String)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

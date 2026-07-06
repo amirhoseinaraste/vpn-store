@@ -12,7 +12,7 @@ class UserKeyboard:
     def main_menu_keyboard() -> InlineKeyboardMarkup:
         builder = InlineKeyboardBuilder()
 
-        builder.button(text="🛍 خرید کانفیگ", callback_data="buy_config")
+        builder.button(text="🛍 خرید اشتراک", callback_data="buy_config")
         builder.button(text="👤 حساب کاربری", callback_data="profile")
         builder.button(text="📞 پشتیبانی", callback_data="support")
 
