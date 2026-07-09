@@ -11,7 +11,7 @@ class ProductKeyboard():
         # for category 
         builder = InlineKeyboardBuilder()
         for product in products_list :
-            builder.button(text=str(product.name), callback_data=str(product.name))
+            builder.button(text=str(product.name), callback_data=f"product_{product.id}")
 
         builder.adjust(1)
 

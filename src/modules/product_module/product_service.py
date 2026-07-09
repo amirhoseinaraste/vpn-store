@@ -5,7 +5,6 @@ import datetime
 
 
 # import from file
-from src.model.category import Category
 from src.model.product import Product
 from src.modules.category_module.category_service import CategoryService
 

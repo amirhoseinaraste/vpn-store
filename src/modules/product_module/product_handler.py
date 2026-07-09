@@ -3,6 +3,8 @@
 
 from email.mime import message
 
+from aiogram import Router
+
 from src.model.product import Product
 from src.modules.product_module.product_service import ProductService
 from src.modules.category_module.category_controller import CategoryController
@@ -16,9 +18,23 @@ from src.DB.database import sessionlocal
 
 class ProductHandler:
     def __init__(self):
+        self.router = Router()
         self.product_service = ProductService(DB=sessionlocal)
         self.category_controller = CategoryController(DB=sessionlocal)
         self.product_contorller = ProductController(DB=sessionlocal)
+
+        # select product by id
+        @self.router.callback_query(lambda c: c.data.startswith("product_"))
+        async def get_product_handler(callback_query):
+            print("@")
+            product_id = int(callback_query.data.split("_")[1])
+            print(f"Product ID: {product_id}")  # Debugging statement
+            product = await self.product_contorller.get_product_by_id(product_id)
+            if product:
+                await callback_query.message.answer(f"Product: {product.name}, Price: {product.price}")
+            else:
+                await callback_query.message.answer("Product not found.")
+
 
     async def get_products_by_category(self, category_id: int):
         try:
