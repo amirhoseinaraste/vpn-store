@@ -1,4 +1,4 @@
-# import from files     
+# import from files
 from src.DB.database import Base
 
 # import from packages
@@ -8,7 +8,7 @@ import datetime
 
 
 class Config(Base):
-    __tablename__ = 'Configs'
+    __tablename__ = 'configs'
 
     id = Column(Integer, primary_key=True, index=True)
     product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
@@ -16,6 +16,6 @@ class Config(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-    # Relationship
-    products = relationship('Product', backref='configs')
+    # product = relationship('Product', back_populates='configs')
+    # transactions = relationship('Transaction', back_populates='config', cascade='all, delete-orphan')
 

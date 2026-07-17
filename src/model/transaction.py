@@ -1,4 +1,4 @@
-# import from files     
+# import from files
 from src.DB.database import Base
 
 # import from packages
@@ -12,16 +12,19 @@ class statusEnum:
     approved = "approved"
     rejected = "rejected"
 
+
 class Transaction(Base):
-    __tablename__ = 'Transaction'
+    __tablename__ = 'transactions'
 
     id = Column(Integer, primary_key=True, index=True)
     product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
-    user_id = Column(Integer, nullable=False)
-    config_id = Column(Integer, ForeignKey('Configs.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    config_id = Column(Integer, ForeignKey('configs.id'), nullable=True)
     amount = Column(Integer, nullable=False)
     status = Column(String, default=statusEnum.pending)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     approved_at = Column(DateTime, nullable=True)
 
-    
+    product = relationship('Product', back_populates='transactions')
+    user = relationship('User', back_populates='transactions')
+    config = relationship('Config', back_populates='transactions')

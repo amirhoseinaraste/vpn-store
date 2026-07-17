@@ -1,8 +1,12 @@
 # from files
 from src.modules.product_module.product_service import ProductService
-
+from src.model.order import Order
 # from packages
 from sqlalchemy.ext.asyncio import AsyncSession
+import datetime
+
+from sqlalchemy import select
+
 
 class OrderService:
     def __init__(self, DB: AsyncSession):
@@ -10,12 +14,28 @@ class OrderService:
 
         self.product_service = ProductService(DB=self.db)
 
-    async def create_order(self, order_data):
-        # Implement order creation logic here
-        # For example, you might want to check if the product exists before creating an order
-        product = await self.product_service.get_product(order_data.product_id)
-        if not product:
-            raise ValueError(f"Product with id {order_data.product_id} does not exist")
+    async def create_order(self, order):
+        print(order)
+        order_data = Order(
+            **order,
+            status="pending"
+        )   
+        async with self.db() as session:
+            session.add(order_data)
+            await session.commit()
+            await session.refresh(order_data)
+            return order_data
         
-        # Proceed with order creation logic
-        # ...
+    async def get_all_orders(self):
+        async with self.db() as session:
+            stmt = select(Order)
+            result = await session.execute(stmt)
+            return result.scalars().all()
+        
+    async def get_order_by_id(self, id: int):
+        async with self.db() as session:
+            result = await session.execute(select(Order).where(Order.id==id))
+            order = result.scalars().first()
+            return order
+    
+        

@@ -6,17 +6,13 @@ from src.modules.order_module.order_controller import OrderController
 
 from fastapi import APIRouter, HTTPException, status
 
-
-
-
-
 class order_router:
     def __init__(self):
         self.router = APIRouter(tags=['Order API'])
-        self.router_controller = OrderController()
+        self.router_controller = OrderController(DB=sessionlocal)
 
         @self.router.post('/order')
-        async def create_order():
+        async def create_order(): 
             try:
                 # Implement the logic to create a new order
                 return {"message": "Order created successfully"}
@@ -33,7 +29,8 @@ class order_router:
         async def get_all_orders():
             try:
                 # Implement the logic to get all orders
-                return {"message": "All orders retrieved successfully"}
+                orders = await self.router_controller.get_orders()
+                return orders
             except Exception as e:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
             

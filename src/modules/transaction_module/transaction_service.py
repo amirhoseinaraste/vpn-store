@@ -10,16 +10,16 @@ from src.model.transaction import Transaction
 
 
 
-class transaction_service:
+class TransactionService:
     def __init__(self, db: AsyncSession):
         self.db = db
-
+    
     async def create_transaction(self, transaction: Transaction):
         async with self.db() as session:
             session.add(transaction)
             await session.commit()
             await session.refresh(transaction)
-        return transaction
+            return transaction
     
     async def get_transaction_by_id(self, transaction_id: int):
         async with self.db() as session:

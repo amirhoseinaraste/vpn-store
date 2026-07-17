@@ -24,6 +24,7 @@ class main_router:
         self.router.include_router(product().router)
         self.router.include_router(category().router)
         self.router.include_router(config().router)
+        self.router.include_router(order().router)
 
         
 

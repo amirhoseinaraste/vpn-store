@@ -11,7 +11,8 @@ class ProductController:
 
     async def get_product_by_id(self, id: int):
         try:
-            return await self.product_service.get_product(id)
+            product = await self.product_service.get_product(id)
+            return product
         except Exception as e:
             raise exception_handlers.HTTPException(status_code=500, detail=str(e))      
     

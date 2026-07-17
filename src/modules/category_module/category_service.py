@@ -82,3 +82,4 @@ class CategoryService:
             await session.delete(category)
             await session.commit()
             return True    
+    

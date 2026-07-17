@@ -1,9 +1,8 @@
-# import from files     
+# import from files
 from src.DB.database import Base
 
-
 # import from packages
-from sqlalchemy import Column, ForeignKey, Integer, String, BigInteger, DateTime, Enum, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Enum, Float
 from sqlalchemy.orm import relationship
 import datetime
 import enum
@@ -22,14 +21,14 @@ class Product(Base):
     price = Column(Float)
     volume = Column(Integer)
     duration = Column(Integer)
-    # foreign key column matches existing database schema (category_id)
     category_id = Column(Integer, ForeignKey('categories.id'))
     status = Column(Enum(ProductStatus), default=ProductStatus.available)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-    # relationship to category object (singular)
-    category_rel = relationship("Category", back_populates="products")
+    category = relationship("Category", back_populates="products")
+    # configs = relationship('Config', back_populates='product', cascade='all, delete-orphan')
+    # transactions = relationship('Transaction', back_populates='product', cascade='all, delete-orphan')
 
 
 

@@ -23,5 +23,5 @@ class Category(Base):
     parent_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
     parent = relationship('Category', remote_side=[id], backref='children')
 
-    # inverse side of Product.category_rel relationship
-    products = relationship("Product", back_populates="category_rel")
+    # inverse side of Product.category relationship
+    products = relationship("Product", back_populates="category")

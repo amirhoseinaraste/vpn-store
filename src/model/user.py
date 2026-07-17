@@ -1,11 +1,9 @@
-# import from files     
+# import from files
 from src.DB.database import Base
 
 # import from packages
 from sqlalchemy import Column, Integer, String, BigInteger, DateTime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.types import DateTime
-import uuid
+from sqlalchemy.orm import relationship
 
 
 class User(Base):
