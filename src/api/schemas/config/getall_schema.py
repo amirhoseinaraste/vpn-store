@@ -4,8 +4,5 @@ from typing import Optional
 
 class ResponseGetAllConfigsSchema(BaseModel):
     id: int
-    product_id: str
+    product_id: int
     value: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-    

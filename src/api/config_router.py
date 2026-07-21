@@ -19,12 +19,20 @@ class config_router:
         async def create_config(config: CreateConfigSchema):
             try:
                 new_config = await self.config_controller.create_config(product_id=config.product_id, value=config.value)
+                print(new_config)
                 return ResponseCreateConfigSchema(id=new_config.id, status="success", created_at=str(new_config.created_at))
             except HTTPException as e:
                 raise e
             except Exception as e:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-            
+        
+        @self.router.get('/config_by_product_id/{id}', response_model=list[ResponseGetOneConfigSchema])
+        async def get_config_by_product_id(id:int):
+            configs = await  self.config_controller.get_configs_by_product_id(product_id=id)
+            if not configs:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Congif not found')
+            return [ResponseGetOneConfigSchema(id=config.id, value=config.value)for config in configs]
+
         @self.router.get('/config/{id}', response_model=ResponseGetOneConfigSchema)
         async def get_config(id: int):
             config = await self.config_controller.get_config_by_id(id)
@@ -34,7 +42,7 @@ class config_router:
         
         @self.router.get('/configs', response_model=list[ResponseGetAllConfigsSchema])
         async def get_all_configs():
-            configs = await self.config_controller.get_all_configs()
+            configs = await self.config_controller.get_configs()
             return [ResponseGetAllConfigsSchema(id=config.id, product_id=config.product_id, value=config.value) for config in configs]
         
         @self.router.put('/config/{id}', response_model=ResponseGetOneConfigSchema)

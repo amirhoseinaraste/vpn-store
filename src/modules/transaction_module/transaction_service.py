@@ -1,6 +1,5 @@
 # import from packages
 from requests import Session
-from sqlalchemy import Transaction
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 import datetime
@@ -14,11 +13,19 @@ class TransactionService:
     def __init__(self, db: AsyncSession):
         self.db = db
     
-    async def create_transaction(self, transaction: Transaction):
+    async def create_transaction(self, transaction):
+        print(transaction)
+        transaction_data = Transaction(
+            order_id= transaction['order_id'],
+            photo_file_id= transaction['photo_file_id'],
+            archive_message_id= transaction['archive_message_id'],
+            status='pending'
+            
+        )
         async with self.db() as session:
-            session.add(transaction)
+            session.add(transaction_data)
             await session.commit()
-            await session.refresh(transaction)
+            await session.refresh(transaction_data)
             return transaction
     
     async def get_transaction_by_id(self, transaction_id: int):
@@ -54,7 +61,8 @@ class TransactionService:
     
     async def get_all_transactions(self):
         async with self.db() as session:
-            result = await session.execute(select(Transaction))
+            stmt = select(Transaction)
+            result = await session.execute(stmt)
             return result.scalars().all()
         
     async def get_transactions_by_status(self, status: str):

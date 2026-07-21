@@ -4,11 +4,13 @@ from src.modules.transaction_module.transaction_service import TransactionServic
 
 # from packages
 from http.client import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 
 class TransactionController:
-    def __init__(self):
-        self.transaction_service = TransactionService
+    def __init__(self, DB: AsyncSession):
+        self.transaction_service = TransactionService(DB)
 
 
     async def create_transaction(self, data):
@@ -25,6 +27,8 @@ class TransactionController:
             transaction = await self.transaction_service.get_all_transactions()
             if not transaction:
                 raise HTTPException(status_code=404, detail= 'not found transaction') 
+            
+            return transaction
         except ValueError as e:
             raise HTTPException(status_code=400, detail= f'Error fetching transaction: {e}')
         

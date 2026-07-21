@@ -1,30 +1,33 @@
-# import from files
-from src.DB.database import Base
+from enum import Enum
 
-# import from packages
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.orm import relationship
-import datetime
 
-
-class statusEnum:
-    pending = "pending"
-    approved = "approved"
-    rejected = "rejected"
+from src.DB.database import Base
 
 
 class Transaction(Base):
-    __tablename__ = 'transactions'
+    __tablename__ = "transaction"
 
     id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer, ForeignKey('products.id'), nullable=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    config_id = Column(Integer, ForeignKey('configs.id'), nullable=True)
-    amount = Column(Integer, nullable=False)
-    status = Column(String, default=statusEnum.pending)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    approved_at = Column(DateTime, nullable=True)
 
-    product = relationship('Product', back_populates='transactions')
-    user = relationship('User', back_populates='transactions')
-    config = relationship('Config', back_populates='transactions')
+    order_id = Column(
+        Integer,
+        ForeignKey("orders.id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
+
+    photo_file_id = Column(String, nullable=False)
+
+    archive_message_id = Column(Integer, nullable=False)
+
+    status = Column(
+        String,
+        nullable=True,
+        default='pending'
+    )
+
+    orders = relationship('Order', back_populates='transaction')
+

@@ -1,11 +1,9 @@
 # import from files
-from http.client import HTTPException
-
 from src.modules.order_module.order_service import OrderService
 
 # import from packages
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from http.client import HTTPException
 
 class OrderController:
     def __init__(self, DB: AsyncSession):

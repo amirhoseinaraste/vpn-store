@@ -3,12 +3,11 @@ from pydantic import BaseModel
 from typing import Optional
 
 class CreateConfigSchema(BaseModel):
-    product_id: str
+    product_id: int
     value: str
 
 class ResponseCreateConfigSchema(BaseModel):
     id: int
-    product_id: str
-    value: str
+    status: str
     created_at: Optional[str] = None
     

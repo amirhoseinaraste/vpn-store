@@ -27,7 +27,11 @@ class Product(Base):
     updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     category = relationship("Category", back_populates="products")
-    # configs = relationship('Config', back_populates='product', cascade='all, delete-orphan')
+    configs = relationship(
+    "Config",
+    back_populates="product",
+    cascade="all, delete-orphan"
+    )
     # transactions = relationship('Transaction', back_populates='product', cascade='all, delete-orphan')
 
 

@@ -10,6 +10,7 @@ from src.api.category_router import category_router as category
 from src.api.config_router import config_router as config
 from src.api.transaction_router import tansaction_router as transaction
 from src.api.order_router import order_router as order
+from src.api.transaction_router import tansaction_router
 from src.api.schemas.error_schema import ErrorResponse
 
 # TODO: init main router
@@ -25,6 +26,7 @@ class main_router:
         self.router.include_router(category().router)
         self.router.include_router(config().router)
         self.router.include_router(order().router)
+        self.router.include_router(tansaction_router().router)
 
         
 
